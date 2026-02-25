@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="CentralPeer.API/CentralPeer.API.csproj" />
+  <Project Path="CentralPeer.Application/CentralPeer.Application.csproj" />
+  <Project Path="CentralPeer.Domain/CentralPeer.Domain.csproj" />
+  <Project Path="CentralPeer.Infrastructure/CentralPeer.Infrastructure.csproj" />
+</Solution>
