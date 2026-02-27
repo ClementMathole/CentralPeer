@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CentralPeer.Infrastructure.Data;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : DbContext, IApplicationDbContext
 {
     private readonly ICurrentUser _currentUser;
 
@@ -29,6 +29,10 @@ public class ApplicationDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        // TutorProfile uses UserId as its primary key (one-to-one with User)
+        modelBuilder.Entity<TutorProfile>()
+            .HasKey(tp => tp.UserId);
 
         // 1 - 1 relationship between User and TutorProfile
         modelBuilder.Entity<User>()
@@ -73,6 +77,8 @@ public class ApplicationDbContext : DbContext
     /// <summary>
     /// Automatically handles timestamps before commiting changes to the database
     /// </summary>
+    /// <param name="ct"></param>
+    /// <returns></returns>
     public override Task<int> SaveChangesAsync(CancellationToken ct = new CancellationToken())
     {
         foreach (var entry in ChangeTracker.Entries<BaseEntity>())
