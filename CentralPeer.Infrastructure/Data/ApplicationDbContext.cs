@@ -10,9 +10,9 @@ namespace CentralPeer.Infrastructure.Data;
 
 public class ApplicationDbContext : DbContext, IApplicationDbContext
 {
-    private readonly ICurrentUser _currentUser;
+    private readonly ICurrentUser? _currentUser;
 
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, ICurrentUser currentUser) : base(options)
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, ICurrentUser? currentUser = null) : base(options)
     {
         _currentUser = currentUser;
     }
@@ -71,7 +71,21 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
         // Global Query Filters
         // automatically filters data so users only interact with data from their campus
         modelBuilder.Entity<User>()
-            .HasQueryFilter(u => !_currentUser.CampusId.HasValue || u.CampusId == _currentUser.CampusId);
+            .HasQueryFilter(u => _currentUser == null || !_currentUser.CampusId.HasValue || u.CampusId == _currentUser.CampusId);
+
+        modelBuilder.Entity<Campus>()
+            .HasData(new Campus
+            {
+                Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
+                Name = "Welkom",
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            },
+            new Campus
+            {
+                Id = Guid.Parse("22222222-2222-2222-2222-222222222222"),
+                Name = "Boemfontein",
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            });
     }
 
     /// <summary>

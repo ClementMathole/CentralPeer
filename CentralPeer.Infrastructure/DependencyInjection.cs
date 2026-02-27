@@ -1,3 +1,4 @@
+using CentralPeer.Application.Interfaces;
 using CentralPeer.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -17,6 +18,8 @@ public static class DependencyInjection
                 b => b.MigrationsAssembly(typeof(ApplicationDbContext)
                     .Assembly
                     .FullName)));
+        
+        services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
         
         return services;
     }
